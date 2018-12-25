@@ -3,6 +3,8 @@
 from enum import Enum
 import json
 
+from google.cloud import bigquery
+
 
 class SchemaNotDefined(Exception):
 
@@ -188,4 +190,54 @@ def get_infered_schema(data):
     Schema dictionary.
   """
   json_schema = infer_schema(data)
-  return {'fields': [item[1] for item in json_schema.items()]}
+
+  def create_schema_field(schema):
+    schema_field = {
+        'name': schema['name'],
+        'type': schema['type'],
+        'mode': schema['mode']
+    }
+    if schema['type'] == 'RECORD':
+      fields = []
+      for item in schema['fields'].items():
+        subfield = create_schema_field(item[1])
+        fields.append(subfield)
+
+      schema_field['fields'] = fields
+
+    return schema_field
+
+  return {
+      'fields': [create_schema_field(item[1]) for item in json_schema.items()]
+  }
+
+
+def get_bq_schema_field(data):
+  """Get schema corresponding to `google.cloud.bigquery`.
+  
+  Args:
+    data: String or dictionary.
+
+  Returns:
+    List of `google.cloud.schema.SchemaField`.
+  """
+  json_schema = infer_schema(data)
+
+  def create_schema_field(schema):
+    if schema['type'] == 'RECORD':
+      fields = []
+      for item in schema['fields'].items():
+        subfield = create_schema_field(item[1])
+        fields.append(subfield)
+
+      schema_field = bigquery.SchemaField(
+          name=schema['name'],
+          field_type=schema['type'],
+          mode=schema['mode'],
+          fields=tuple(fields))
+    else:
+      schema_field = bigquery.SchemaField(
+          name=schema['name'], field_type=schema['type'], mode=schema['mode'])
+    return schema_field
+
+  return [create_schema_field(item[1]) for item in json_schema.items()]

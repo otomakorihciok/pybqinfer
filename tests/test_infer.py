@@ -204,18 +204,15 @@ def test_get_infered_schema():
   assert family['name'] == 'family'
   assert family['type'] == 'RECORD'
   assert family['mode'] == 'REPEATED'
-  assert family['fields'] == {
-      'relation': {
-          'name': 'relation',
-          'type': 'STRING',
-          'mode': 'NULLABLE'
-      },
-      'age': {
-          'name': 'age',
-          'type': 'INTEGER',
-          'mode': 'NULLABLE'
-      }
-  }
+  assert family['fields'] == [{
+      'name': 'relation',
+      'type': 'STRING',
+      'mode': 'NULLABLE'
+  }, {
+      'name': 'age',
+      'type': 'INTEGER',
+      'mode': 'NULLABLE'
+  }]
 
   hobby = schema[5]
   assert hobby['name'] == 'hobby'
@@ -226,20 +223,16 @@ def test_get_infered_schema():
   assert job['name'] == 'job'
   assert job['type'] == 'RECORD'
   assert job['mode'] == 'NULLABLE'
-  assert job['fields'] == {
-      'name': {
-          'name': 'name',
-          'type': 'STRING',
-          'mode': 'NULLABLE'
-      },
-      'current': {
-          'name': 'current',
-          'type': 'BOOLEAN',
-          'mode': 'NULLABLE'
-      },
-      'span': {
-          'name': 'span',
-          'type': 'FLOAT',
-          'mode': 'NULLABLE'
-      }
-  }
+  assert job['fields'] == [{
+      'name': 'name',
+      'type': 'STRING',
+      'mode': 'NULLABLE'
+  }, {
+      'name': 'current',
+      'type': 'BOOLEAN',
+      'mode': 'NULLABLE'
+  }, {
+      'name': 'span',
+      'type': 'FLOAT',
+      'mode': 'NULLABLE'
+  }]
