@@ -56,7 +56,7 @@ def get_schema_from_str(k, s):
     t, pattern = regex
     ret = re.fullmatch(pattern, s)
     if ret:
-      return {'name': k, 'type': t, 'mode': Mode.NULLABLE.name}
+      return {'name': k, 'type': t.name, 'mode': Mode.NULLABLE.name}
 
   return {'name': k, 'type': Type.STRING.name, 'mode': Mode.NULLABLE.name}
 
